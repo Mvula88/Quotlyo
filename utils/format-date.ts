@@ -1,12 +1,6 @@
-export function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(date)
-  } catch (error) {
-    return dateString
-  }
+export function formatDate(date: string | Date): string {
+  if (!date) return ""
+
+  const d = typeof date === "string" ? new Date(date) : date
+  return d.toLocaleDateString()
 }

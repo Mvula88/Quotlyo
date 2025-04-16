@@ -10,3 +10,7 @@ export const supabase = () => {
 
   return createClient(supabaseUrl, supabaseAnonKey)
 }
+
+export function getSupabaseClient() {
+  return null
+}

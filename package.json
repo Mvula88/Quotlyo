@@ -60,11 +60,10 @@
     "zod": "^3.24.1",
     "chart.js": "latest",
     "@emotion/is-prop-valid": "latest",
-    "@supabase/supabase-js": "latest",
     "react-chartjs-2": "latest",
     "framer-motion": "latest",
     "uuid": "latest",
-    "@supabase/ssr": "latest"
+    "@supabase/supabase-js": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
