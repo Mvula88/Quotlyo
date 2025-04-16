@@ -1,5 +1,3 @@
-import { createClient } from "@/utils/supabase/server"
-import { notFound } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AdumoPaymentButton } from "@/components/payment/adumo-payment-button"
 import { Button } from "@/components/ui/button"
@@ -7,18 +5,42 @@ import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { ArrowLeft, Download, Send } from "lucide-react"
 
+// Mock data for demonstration
+const mockInvoice = {
+  id: "invoice-123",
+  number: "INV-2023-001",
+  status: "pending",
+  amount: "$1,250.00",
+  date: "2023-05-15",
+  due_date: "2023-06-15",
+  client_id: "client-123",
+  items: [
+    {
+      description: "Website Design",
+      quantity: 1,
+      price: "$1,000.00",
+      total: "$1,000.00",
+    },
+    {
+      description: "Logo Design",
+      quantity: 1,
+      price: "$250.00",
+      total: "$250.00",
+    },
+  ],
+  clients: {
+    name: "John Doe",
+    company: "Acme Inc",
+    email: "john@example.com",
+    phone: "+1 (555) 123-4567",
+    address: "123 Main St\nSuite 100\nAnytown, CA 12345",
+  },
+}
+
 export default async function InvoiceDetailPage({ params }: { params: { id: string } }) {
-  const supabase = createClient()
-
-  // Fetch the invoice with client data
-  const { data: invoice, error } = await supabase.from("invoices").select("*, clients(*)").eq("id", params.id).single()
-
-  if (error || !invoice) {
-    notFound()
-  }
-
-  // Parse invoice items
-  const items = invoice.items || []
+  // In a real implementation, you would fetch the invoice from your database
+  // For demo purposes, we'll use mock data
+  const invoice = mockInvoice
 
   // Determine if invoice is payable (not paid or cancelled)
   const isPayable = invoice.status !== "paid" && invoice.status !== "cancelled"
@@ -44,7 +66,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
             <Send className="mr-2 h-4 w-4" />
             Send to Client
           </Button>
-          {isPayable && <AdumoPaymentButton invoiceId={invoice.id} />}
+          {isPayable && <AdumoPaymentButton invoiceId={invoice.id} amount={invoice.amount} />}
         </div>
       </div>
 
@@ -101,8 +123,8 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
                   </tr>
                 </thead>
                 <tbody>
-                  {items.length > 0 ? (
-                    items.map((item: any, index: number) => (
+                  {invoice.items.length > 0 ? (
+                    invoice.items.map((item: any, index: number) => (
                       <tr key={index} className="border-b">
                         <td className="px-4 py-2">{item.description}</td>
                         <td className="px-4 py-2 text-right">{item.quantity}</td>
@@ -175,7 +197,7 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4">
-              <AdumoPaymentButton invoiceId={invoice.id} size="lg" />
+              <AdumoPaymentButton invoiceId={invoice.id} amount={invoice.amount} size="lg" />
               {/* Add other payment methods here if needed */}
             </div>
           </CardContent>

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { updatePaymentTransaction, getPaymentTransaction } from "@/app/actions/payment-actions"
 import { CheckCircle2, Loader2 } from "lucide-react"
 
 export default function PaymentSuccessPage() {
@@ -26,32 +25,13 @@ export default function PaymentSuccessPage() {
           return
         }
 
-        // Get the transaction details
-        const transactionResult = await getPaymentTransaction(transactionId)
+        // Simulate API call to update transaction status
+        // In a real implementation, you would call your API here
+        await new Promise((resolve) => setTimeout(resolve, 1500))
 
-        if (!transactionResult.success) {
-          setError(transactionResult.error || "Failed to retrieve transaction details")
-          setIsLoading(false)
-          return
-        }
-
-        // Update the transaction status to completed
-        const updateResult = await updatePaymentTransaction(transactionId, "completed", {
-          status: "success",
-          timestamp: new Date().toISOString(),
-        })
-
-        if (!updateResult.success) {
-          setError(updateResult.error || "Failed to update transaction status")
-          setIsLoading(false)
-          return
-        }
-
-        // Store invoice details for display
-        if (updateResult.data?.invoices) {
-          setInvoiceId(updateResult.data.invoices.id)
-          setInvoiceNumber(updateResult.data.invoices.number)
-        }
+        // For demo purposes, we'll just set some sample data
+        setInvoiceId("sample-invoice-id")
+        setInvoiceNumber("INV-2023-001")
 
         setIsLoading(false)
       } catch (err) {

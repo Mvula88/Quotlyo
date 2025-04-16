@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,46 +8,17 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AlertCircle, CheckCircle2, CreditCard, Save } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { createClient } from "@/utils/supabase/client"
 
 export default function PaymentGatewaysPage() {
   const [adumoSettings, setAdumoSettings] = useState({
-    merchantId: "",
-    apiKey: "",
-    paymentUrl: "https://secure.adumoonline.com/paymentpage",
+    merchantId: process.env.ADUMO_MERCHANT_ID || "",
+    apiKey: process.env.ADUMO_API_KEY ? "********" : "",
+    paymentUrl: process.env.ADUMO_PAYMENT_URL || "https://secure.adumoonline.com/paymentpage",
   })
-  const [appUrl, setAppUrl] = useState("")
+  const [appUrl, setAppUrl] = useState(process.env.NEXT_PUBLIC_APP_URL || "")
   const [isSaving, setIsSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle")
   const [statusMessage, setStatusMessage] = useState("")
-
-  // Load existing settings if available
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const supabase = createClient()
-        const { data, error } = await supabase.from("settings").select("*").eq("key", "payment_gateways").single()
-
-        if (error) {
-          console.error("Error loading settings:", error)
-          return
-        }
-
-        if (data?.value?.adumo) {
-          setAdumoSettings(data.value.adumo)
-        }
-
-        // Set app URL
-        if (typeof window !== "undefined") {
-          setAppUrl(window.location.origin)
-        }
-      } catch (error) {
-        console.error("Failed to load settings:", error)
-      }
-    }
-
-    loadSettings()
-  }, [])
 
   const handleSaveSettings = async () => {
     setIsSaving(true)
@@ -55,35 +26,8 @@ export default function PaymentGatewaysPage() {
     setStatusMessage("")
 
     try {
-      const supabase = createClient()
-
-      // Check if settings exist
-      const { data: existingSettings } = await supabase
-        .from("settings")
-        .select("*")
-        .eq("key", "payment_gateways")
-        .single()
-
-      const paymentGatewaysSettings = {
-        adumo: adumoSettings,
-      }
-
-      let result
-
-      if (existingSettings) {
-        // Update existing settings
-        result = await supabase
-          .from("settings")
-          .update({ value: paymentGatewaysSettings })
-          .eq("key", "payment_gateways")
-      } else {
-        // Insert new settings
-        result = await supabase.from("settings").insert({ key: "payment_gateways", value: paymentGatewaysSettings })
-      }
-
-      if (result.error) {
-        throw new Error(result.error.message)
-      }
+      // Simulate API call to save settings
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
       setSaveStatus("success")
       setStatusMessage("Payment gateway settings saved successfully!")
