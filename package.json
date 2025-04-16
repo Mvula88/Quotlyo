@@ -61,9 +61,7 @@
     "chart.js": "latest",
     "@emotion/is-prop-valid": "latest",
     "react-chartjs-2": "latest",
-    "framer-motion": "latest",
-    "uuid": "latest",
-    "@supabase/supabase-js": "latest"
+    "framer-motion": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

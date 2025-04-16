@@ -6,20 +6,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import {
-  BarChart3,
-  FileText,
-  Home,
-  Menu,
-  Sparkles,
-  Stamp,
-  Users,
-  X,
-  Share2,
-  Shield,
-  Lightbulb,
-  CreditCard,
-} from "lucide-react"
+import { BarChart3, FileText, Home, Menu, Sparkles, Stamp, Users, X, Share2, Shield, Lightbulb } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -115,11 +102,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       href: "/admin",
       icon: Shield,
       isAdmin: true,
-    },
-    {
-      name: t("nav.paymentSettings"),
-      href: "/dashboard/settings/payment-gateways",
-      icon: CreditCard,
     },
   ]
 
