@@ -9,82 +9,46 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { createClient } from "@/utils/supabase/client"
 import { toast } from "@/components/ui/use-toast"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+
+// For development purposes only
+const DEV_EMAIL = "ismaelmvula@gmail.com"
+const DEV_PASSWORD = "password123"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
-  const supabase = createClient()
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setEmailNotConfirmed(false)
 
     try {
-      console.log("Attempting to sign in with:", email)
-      const { error, data } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      // For development purposes, use a simple email/password check
+      if (email === DEV_EMAIL && password === DEV_PASSWORD) {
+        console.log("Development login successful")
+        toast({
+          title: "Login successful",
+          description: "Welcome to Quotlyo!",
+        })
 
-      if (error) {
-        console.error("Sign in error:", error)
+        // Set a simple auth cookie for development
+        document.cookie = "quotlyo_auth=true; path=/; max-age=86400"
 
-        // Handle specific error cases
-        if (error.message.includes("Email not confirmed")) {
-          setEmailNotConfirmed(true)
-          return
-        }
-
-        throw error
+        // Redirect to dashboard
+        setTimeout(() => {
+          window.location.href = "/dashboard"
+        }, 1000)
+      } else {
+        throw new Error("Invalid email or password")
       }
-
-      console.log("Sign in successful, redirecting to dashboard")
-      toast({
-        title: "Sign in successful",
-        description: "Welcome back!",
-      })
-
-      // Use window.location for a hard redirect
-      window.location.href = "/dashboard"
     } catch (error: any) {
-      console.error("Sign in error:", error)
+      console.error("Login error:", error)
       toast({
-        title: "Sign in failed",
-        description: error.message || "Invalid email or password",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleResendVerification = async () => {
-    setIsLoading(true)
-    try {
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email,
-      })
-
-      if (error) {
-        throw error
-      }
-
-      toast({
-        title: "Verification email sent",
-        description: "Please check your inbox for the verification link",
-      })
-    } catch (error: any) {
-      toast({
-        title: "Failed to resend verification email",
-        description: error.message || "Please try again later",
+        title: "Login failed",
+        description: error.message || "Please check your credentials and try again",
         variant: "destructive",
       })
     } finally {
@@ -94,30 +58,6 @@ export function LoginForm() {
 
   return (
     <div className="grid gap-6">
-      {emailNotConfirmed && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            <div className="flex flex-col gap-2">
-              <p>Your email address has not been verified.</p>
-              <Button variant="outline" size="sm" onClick={handleResendVerification} disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  "Resend verification email"
-                )}
-              </Button>
-              <p className="text-sm mt-2">
-                For development purposes, you can try signing in anyway. The email verification requirement has been
-                bypassed.
-              </p>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
-
       <form onSubmit={handleSignIn}>
         <div className="grid gap-4">
           <div className="grid gap-2">
@@ -183,6 +123,14 @@ export function LoginForm() {
           <Link href="/sign-up" className="text-blue-600 hover:underline">
             Sign up
           </Link>
+        </p>
+      </div>
+
+      {/* Development note */}
+      <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+        <p className="text-sm text-yellow-800">
+          <strong>Development Mode:</strong> Use email <code>{DEV_EMAIL}</code> and password <code>{DEV_PASSWORD}</code>{" "}
+          to sign in.
         </p>
       </div>
     </div>
