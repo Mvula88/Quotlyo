@@ -29,19 +29,21 @@ export function SignUpForm() {
     setIsLoading(true)
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Sign up the user
+      const { error: signUpError, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName,
           },
+          // For development, we're not requiring email verification
           emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       })
 
-      if (error) {
-        throw error
+      if (signUpError) {
+        throw signUpError
       }
 
       // Insert the user into our users table
@@ -54,12 +56,31 @@ export function SignUpForm() {
         console.error("Error inserting user data:", insertError)
       }
 
-      setSignUpComplete(true)
+      // For development, sign in the user immediately after sign up
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
+      if (signInError) {
+        console.error("Auto sign-in error:", signInError)
+        setSignUpComplete(true)
+        toast({
+          title: "Account created",
+          description:
+            "Your account has been created, but we couldn't sign you in automatically. Please try signing in manually.",
+        })
+        return
+      }
+
+      // Redirect to dashboard on successful sign-up and auto sign-in
       toast({
         title: "Account created",
-        description: "Please check your email to verify your account",
+        description: "Your account has been created and you've been signed in automatically.",
       })
+
+      // Use window.location for a hard redirect
+      window.location.href = "/dashboard"
     } catch (error: any) {
       console.error("Sign up error:", error)
       toast({
@@ -82,6 +103,7 @@ export function SignUpForm() {
               We've sent a verification link to <strong>{email}</strong>
             </p>
             <p className="mt-2">Please check your email and click the link to verify your account before signing in.</p>
+            <p className="mt-2">If you don't receive the email, check your spam folder or try signing in anyway.</p>
           </AlertDescription>
         </Alert>
         <Button asChild>
@@ -128,6 +150,7 @@ export function SignUpForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
                 required
+                minLength={6}
               />
               <Button
                 type="button"
@@ -147,7 +170,7 @@ export function SignUpForm() {
             </div>
           </div>
           <div className="text-sm text-muted-foreground">
-            <p>By signing up, you'll receive a verification email. You must verify your email before signing in.</p>
+            <p>For development purposes, email verification is bypassed. You'll be signed in automatically.</p>
           </div>
           <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? (
