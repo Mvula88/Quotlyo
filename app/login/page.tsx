@@ -1,13 +1,6 @@
-import type { Metadata } from "next"
+import { LoginForm } from "@/components/auth/login-form"
 import Link from "next/link"
 import Image from "next/image"
-
-import { LoginForm } from "@/components/auth/login-form"
-
-export const metadata: Metadata = {
-  title: "Login | Quotlyo",
-  description: "Login to your Quotlyo account",
-}
 
 export default function LoginPage() {
   return (
@@ -36,12 +29,7 @@ export default function LoginPage() {
             <p className="text-sm text-muted-foreground">Enter your email and password to sign in to your account</p>
           </div>
           <LoginForm />
-          <p className="px-8 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link href="/sign-up" className="underline underline-offset-4 hover:text-primary">
-              Sign up
-            </Link>
-          </p>
+          {/* Removed the duplicate "Don't have an account?" text here */}
         </div>
       </div>
     </div>

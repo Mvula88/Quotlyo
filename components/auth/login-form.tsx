@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Loader2, RefreshCw } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -12,47 +12,49 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/utils/supabase/client"
 import { toast } from "@/components/ui/use-toast"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export function LoginForm() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [isResendingEmail, setIsResendingEmail] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [emailNotConfirmed, setEmailNotConfirmed] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setEmailNotConfirmed(false)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      // Sign in with email and password
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (error) {
-        // Check if the error is about email confirmation
-        if (error.message.includes("Email not confirmed")) {
-          setEmailNotConfirmed(true)
-          throw new Error("Please verify your email before signing in. Check your inbox for a confirmation link.")
-        }
+        console.error("Authentication error:", error.message)
         throw error
       }
 
+      if (!data.session) {
+        throw new Error("No session returned")
+      }
+
+      console.log("Authentication successful, redirecting to dashboard...")
+
+      // Show success message
       toast({
         title: "Success",
         description: "You have successfully signed in",
       })
 
-      router.push("/dashboard")
-      router.refresh()
+      // Force a hard navigation to dashboard
+      window.location.href = "/dashboard"
     } catch (error: any) {
       console.error("Sign in error:", error)
+
+      // Show error message
       toast({
         title: "Error signing in",
         description: error.message || "Please check your credentials and try again",
@@ -63,75 +65,8 @@ export function LoginForm() {
     }
   }
 
-  const handleResendVerificationEmail = async () => {
-    if (!email) {
-      toast({
-        title: "Email required",
-        description: "Please enter your email address to resend the verification email",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsResendingEmail(true)
-    try {
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email,
-      })
-
-      if (error) {
-        throw error
-      }
-
-      toast({
-        title: "Verification email sent",
-        description: "Please check your inbox for the verification link",
-      })
-    } catch (error: any) {
-      console.error("Error resending verification email:", error)
-      toast({
-        title: "Error",
-        description: error.message || "Failed to resend verification email. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsResendingEmail(false)
-    }
-  }
-
   return (
     <div className="grid gap-6">
-      {emailNotConfirmed && (
-        <Alert variant="warning" className="bg-amber-50 border-amber-200">
-          <AlertTitle>Email not verified</AlertTitle>
-          <AlertDescription className="mt-2">
-            <p className="mb-2">
-              Please verify your email before signing in. Check your inbox for a confirmation link.
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResendVerificationEmail}
-              disabled={isResendingEmail}
-              className="mt-1"
-            >
-              {isResendingEmail ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Resend verification email
-                </>
-              )}
-            </Button>
-          </AlertDescription>
-        </Alert>
-      )}
-
       <form onSubmit={handleSignIn}>
         <div className="grid gap-4">
           <div className="grid gap-2">
@@ -142,7 +77,7 @@ export function LoginForm() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading || isResendingEmail}
+              disabled={isLoading}
               required
             />
           </div>
@@ -159,7 +94,7 @@ export function LoginForm() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                disabled={isLoading || isResendingEmail}
+                disabled={isLoading}
                 required
               />
               <Button
@@ -168,7 +103,7 @@ export function LoginForm() {
                 size="sm"
                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                 onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading || isResendingEmail}
+                disabled={isLoading}
               >
                 {showPassword ? (
                   <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -179,7 +114,7 @@ export function LoginForm() {
               </Button>
             </div>
           </div>
-          <Button type="submit" disabled={isLoading || isResendingEmail} className="w-full">
+          <Button type="submit" disabled={isLoading} className="w-full">
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -191,6 +126,8 @@ export function LoginForm() {
           </Button>
         </div>
       </form>
+
+      {/* Only one "Don't have an account?" text */}
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Don't have an account?{" "}
