@@ -244,7 +244,7 @@ export default function Home() {
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 relative overflow-hidden">
           <motion.div className="absolute inset-0 pointer-events-none" style={{ opacity, y }}>
-            <div className="absolute topp-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-premium-gradient opacity-5 rounded-full blur-[100px]" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-premium-gradient opacity-5 rounded-full blur-[100px]" />
           </motion.div>
 
           <div className="container px-4 md:px-6">
@@ -694,7 +694,7 @@ export default function Home() {
 
                     <CardFooter>
                       <Link href="/dashboard" className="w-full">
-                        <Button 
+                        <Button
                           className={`w-full ${plan.variant === "premium" ? "bg-premium-600 hover:bg-premium-700" : ""}`}
                         >
                           {plan.buttonText}
@@ -709,176 +709,10 @@ export default function Home() {
         </section>
 
         {/* Referral Program Section */}
-        <section id="affiliate-section" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-blue-50 to-blue-100/30">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="space-y-2">
-                <span className="inline-block px-3 py-1 mb-2 text-sm font-medium rounded-full bg-gold-100 text-gold-700">
-                  New
-                </span>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl gradient-text">
-                  Refer Friends, Get Rewarded
-                </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Share Quotlyo with your network and earn rewards for every friend who signs up.
-                </p>
-              </div>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-              >
-                <AnimatedGradientBorder gradientColors={["#eab308", "#ca8a04", "#eab308"]} animationDuration={15}>
-                  <MotionCard variant="gold" className="h-full border-0">
-                    <CardContent className="p-8 space-y-6">
-                      <div className="flex justify-center">
-                        <div className="h-24 w-24 rounded-full bg-gold-100 flex items-center justify-center">
-                          <Users className="h-12 w-12 text-gold-600" />
-                        </div>
-                      </div>
-
-                      <h3 className="text-2xl font-bold text-center gold-gradient-text">How It Works</h3>
-
-                      <ul className="space-y-4">
-                        <li className="flex items-start gap-3">
-                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-600 font-medium">
-                            1
-                          </div>
-                          <div>
-                            <p className="font-medium">Invite your friends using your unique referral link</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-600 font-medium">
-                            2
-                          </div>
-                          <div>
-                            <p className="font-medium">Your friend signs up for any paid plan</p>
-                          </div>
-                        </li>
-                        <li className="flex items-start gap-3">
-                          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold-100 text-gold-600 font-medium">
-                            3
-                          </div>
-                          <div>
-                            <p className="font-medium">You both get a free month of Quotlyo!</p>
-                          </div>
-                        </li>
-                      </ul>
-
-                      <div className="pt-4">
-                        <Link href="/dashboard/referral-program">
-                          <Button variant="default" className="w-full">
-                            Start Referring
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </MotionCard>
-                </AnimatedGradientBorder>
-              </motion.div>
-
-              <motion.div
-                className="space-y-6"
-                initial={{ opacity: 0, x: 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-premium-100/20">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-premium-100 flex items-center justify-center">
-                      <Sparkles className="h-6 w-6 text-premium-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-semibold gradient-text">Unlimited Referrals</h4>
-                      <p className="text-muted-foreground">
-                        There's no limit to how many friends you can refer or rewards you can earn.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-premium-100/20">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-premium-100 flex items-center justify-center">
-                      <CheckCircle2 className="h-6 w-6 text-premium-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-semibold gradient-text">Win-Win</h4>
-                      <p className="text-muted-foreground">
-                        Both you and your referred friend get a free month of service.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 shadow-sm border border-premium-100/20">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-premium-100 flex items-center justify-center">
-                      <ArrowRight className="h-6 w-6 text-premium-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-semibold gradient-text">Easy Sharing</h4>
-                      <p className="text-muted-foreground">
-                        Share your referral link via email, social media, or messaging apps with one click.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="w-full py-12 md:py-24 bg-premium-gradient text-white">
-          <div className="container px-4 md:px-6">
-            <motion.div
-              className="flex flex-col items-center text-center space-y-4"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                Ready to Transform Your Business?
-              </h2>
-              <p className="max-w-[600px] text-white/80 md:text-xl">
-                Join thousands of businesses already saving time and getting paid faster with Quotlyo.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 mt-6">
-                <Link href="/dashboard">
-                  <Button variant="default" size="lg" className="bg-white text-premium-700 hover:bg-white/90">
-                    Start Free Trial
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="border-white/20 bg-white/10 hover:bg-white/20 text-white"
-                  >
-                    Schedule Demo
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Add this section before the footer */}
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-blue-50 to-blue-100/30">
+        <section
+          id="affiliate-section"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-br from-blue-50 to-blue-100/30"
+        >
           <div className="container px-4 md:px-6">
             <motion.div
               className="flex flex-col items-center justify-center space-y-4 text-center mb-12"
@@ -901,7 +735,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <div className="grid gap-8 md:grid-cols-2 items-center">
+            <div className="grid md:grid-cols-2 gap-8 items-center">
               <motion.div
                 className="space-y-4"
                 initial={{ opacity: 0, x: -30 }}
@@ -938,10 +772,10 @@ export default function Home() {
                         Access professional banners, email templates, and social media content to promote Quotlyo.
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                      <CheckCircle2 className="h-4 w-4" />
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                        <CheckCircle2 className="h-4 w-4" />
+                      </div>{" "}
                     </div>
                     <div>
                       <h4 className="font-medium">Dedicated Support</h4>
@@ -1010,6 +844,7 @@ export default function Home() {
             </div>
           </div>
         </section>
+      </main>
 
       <footer className="w-full border-t py-12 bg-premium-50/30">
         <div className="container px-4 md:px-6">
