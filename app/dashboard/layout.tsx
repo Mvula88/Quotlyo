@@ -1,23 +1,25 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { BarChart3, FileText, Home, Menu, Sparkles, Stamp, Users, X, Share2, Shield, Lightbulb } from "lucide-react"
+import { Sparkles, X } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 // Import the ThemeToggle component at the top of the file
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/contexts/language-context"
+import { ScrollToTop } from "@/components/scroll-to-top"
+import { Sidebar } from "@/components/sidebar"
+import { MobileNav } from "@/components/mobile-nav"
+import { UserNav } from "@/components/user-nav"
+import { SignOutButton } from "@/components/auth/sign-out-button"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -30,122 +32,37 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   }[]
 }
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [isMobileOpen, setIsMobileOpen] = useState(false)
-  const pathname = usePathname()
-  const { t } = useLanguage()
-
-  // Check if the screen is mobile
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsCollapsed(window.innerWidth < 1024)
-    }
-
-    checkScreenSize()
-    window.addEventListener("resize", checkScreenSize)
-
-    return () => {
-      window.removeEventListener("resize", checkScreenSize)
-    }
-  }, [])
-
-  const links = [
-    {
-      name: t("nav.dashboard"),
-      href: "/dashboard",
-      icon: Home,
-    },
-    {
-      name: t("nav.invoices"),
-      href: "/dashboard/invoices",
-      icon: FileText,
-    },
-    {
-      name: t("nav.quotations"),
-      href: "/dashboard/quotations",
-      icon: FileText,
-    },
-    {
-      name: t("nav.clients"),
-      href: "/dashboard/clients",
-      icon: Users,
-    },
-    {
-      name: t("nav.stampManager"),
-      href: "/dashboard/stamp-manager",
-      icon: Stamp,
-    },
-    {
-      name: t("nav.premiumFeatures"),
-      href: "/dashboard/premium-features",
-      icon: Sparkles,
-      isPremium: true,
-    },
-    {
-      name: t("nav.reports"),
-      href: "/dashboard/reports",
-      icon: BarChart3,
-    },
-    {
-      name: t("nav.referralProgram"),
-      href: "/dashboard/referral-program",
-      icon: Share2,
-    },
-    {
-      name: t("nav.featureRequests"),
-      href: "/dashboard/feature-requests",
-      icon: Lightbulb,
-    },
-    {
-      name: t("nav.adminDashboard"),
-      href: "/admin",
-      icon: Shield,
-      isAdmin: true,
-    },
-  ]
-
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <div className="flex-1 items-start">
-        <Sidebar isCollapsed={isCollapsed} links={links} className="fixed top-0 z-30 hidden h-screen lg:flex" />
-
-        {/* Desktop header - Added this new section */}
-        <div className="fixed top-4 right-4 z-40 hidden lg:flex items-center gap-2">
-          <LanguageSelector />
-          <ThemeToggle />
-        </div>
-
-        {/* Mobile header */}
-        <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 lg:hidden">
-          <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0">
-              <MobileSidebar links={links} pathname={pathname} setIsMobileOpen={setIsMobileOpen} />
-            </SheetContent>
-          </Sheet>
-          <div className="flex items-center justify-center flex-1">
-            <Image src="/quotlyo_favicon.png" alt="Quotlyo Logo" width={30} height={30} className="mr-2" />
-            <span className="font-semibold">{t("app.name")}</span>
+    <div className="flex min-h-screen flex-col">
+      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+        <MobileNav />
+        <div className="flex flex-1 items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4">
             <LanguageSelector />
             <ThemeToggle />
+            <UserNav />
+            <SignOutButton />
           </div>
         </div>
-
-        <main className={cn("flex-1 transition-all", isCollapsed ? "lg:pl-[80px]" : "lg:pl-[280px]")}>{children}</main>
+      </header>
+      <div className="flex flex-1">
+        <Sidebar className="hidden lg:block" />
+        <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
+      <ScrollToTop />
     </div>
   )
 }
 
-function Sidebar({ className, isCollapsed, links }: SidebarProps) {
+function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
   const pathname = usePathname()
   const { t } = useLanguage()
 
@@ -211,7 +128,7 @@ function Sidebar({ className, isCollapsed, links }: SidebarProps) {
   )
 }
 
-function MobileSidebar({ links, pathname, setIsMobileOpen }) {
+function MobileSidebarOld({ links, pathname, setIsMobileOpen }) {
   const { t } = useLanguage()
 
   return (

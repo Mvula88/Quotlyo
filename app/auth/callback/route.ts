@@ -4,6 +4,8 @@ import { NextResponse } from "next/server"
 
 import type { NextRequest } from "next/server"
 
+export const dynamic = "force-dynamic"
+
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get("code")
@@ -11,9 +13,15 @@ export async function GET(request: NextRequest) {
   if (code) {
     const cookieStore = cookies()
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
-    await supabase.auth.exchangeCodeForSession(code)
+
+    try {
+      await supabase.auth.exchangeCodeForSession(code)
+    } catch (error) {
+      console.error("Error exchanging code for session:", error)
+      return NextResponse.redirect(`${requestUrl.origin}/login?error=Could not authenticate user`)
+    }
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(requestUrl.origin + "/dashboard")
+  return NextResponse.redirect(`${requestUrl.origin}/dashboard`)
 }
