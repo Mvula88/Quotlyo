@@ -177,12 +177,12 @@ export default function Home() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Link href="/dashboard">
+            <Link href="/login">
               <Button variant="outline" className="border-premium-200 hover:bg-premium-50">
                 Log in
               </Button>
             </Link>
-            <Link href="/dashboard">
+            <Link href="/sign-up">
               <Button variant="default">Sign up</Button>
             </Link>
 
@@ -222,12 +222,12 @@ export default function Home() {
                     ))}
                   </nav>
                   <div className="flex flex-col gap-2 mt-4">
-                    <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="outline" className="w-full">
                         Log in
                       </Button>
                     </Link>
-                    <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link href="/sign-up" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="default" className="w-full">
                         Sign up
                       </Button>
