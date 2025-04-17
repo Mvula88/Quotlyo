@@ -18,6 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/contexts/language-context"
+import { SignOutButton } from "@/components/auth/sign-out-button"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -114,6 +115,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="fixed top-4 right-4 z-40 hidden lg:flex items-center gap-2">
           <LanguageSelector />
           <ThemeToggle />
+          <SignOutButton />
         </div>
 
         {/* Mobile header */}
@@ -136,6 +138,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-1">
             <LanguageSelector />
             <ThemeToggle />
+            <SignOutButton />
           </div>
         </div>
 
@@ -152,7 +155,7 @@ function Sidebar({ className, isCollapsed, links }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "flex flex-col border-r bg-background",
+        "flex w-[280px] flex-col border-r bg-background",
         isCollapsed ? "w-[80px] items-center" : "w-[280px]",
         className,
       )}
