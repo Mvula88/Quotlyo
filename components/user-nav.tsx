@@ -39,6 +39,16 @@ export function UserNav() {
 
   if (!user) return null
 
+  // Function to properly capitalize the name
+  const getDisplayName = (fullName: string | null, email: string): string => {
+    if (fullName) {
+      return fullName.replace(/\b\w/g, (match) => match.toUpperCase())
+    }
+    return email
+  }
+
+  const displayName = getDisplayName(user.full_name, user.email)
+
   const initials = user.full_name
     ? user.full_name
         .split(" ")
@@ -60,7 +70,7 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.full_name || "User"}</p>
+            <p className="text-sm font-medium leading-none">{displayName}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
