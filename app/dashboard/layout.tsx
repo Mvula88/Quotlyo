@@ -18,8 +18,9 @@ import { useLanguage } from "@/contexts/language-context"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Sidebar } from "@/components/sidebar"
 import { MobileNav } from "@/components/mobile-nav"
-import { UserNav } from "@/components/user-nav"
+import { Settings, FileText, Home, Users, FileCheck, BarChart3, Lightbulb, Stamp } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
+import { UserNav } from "@/components/user-nav"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -37,6 +38,51 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  const pathname = usePathname()
+
+  const links = [
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: Home,
+    },
+    {
+      name: "Invoices",
+      href: "/dashboard/invoices",
+      icon: FileText,
+    },
+    {
+      name: "Quotations",
+      href: "/dashboard/quotations",
+      icon: FileCheck,
+    },
+    {
+      name: "Clients",
+      href: "/dashboard/clients",
+      icon: Users,
+    },
+    {
+      name: "Reports",
+      href: "/dashboard/reports",
+      icon: BarChart3,
+    },
+    {
+      name: "Feature Requests",
+      href: "/dashboard/feature-requests",
+      icon: Lightbulb,
+    },
+    {
+      name: "Stamp Manager",
+      href: "/dashboard/stamp-manager",
+      icon: Stamp,
+    },
+    {
+      name: "Settings",
+      href: "/dashboard/settings",
+      icon: Settings,
+    },
+  ]
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -54,7 +100,7 @@ export default function DashboardLayout({
         </div>
       </header>
       <div className="flex flex-1">
-        <Sidebar className="hidden lg:block" />
+        <Sidebar links={links} className="hidden lg:block" />
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
       <ScrollToTop />

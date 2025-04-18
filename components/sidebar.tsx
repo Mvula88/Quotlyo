@@ -5,7 +5,7 @@ import type React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { BarChart3, FileText, Home, Settings, Users, FileCheck, Star, Stamp, Lightbulb } from "lucide-react"
+import { BarChart3, FileText, Home, Settings, Users, FileCheck, Stamp, Lightbulb } from "lucide-react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -42,11 +42,6 @@ export function Sidebar({ className }: SidebarProps) {
       href: "/dashboard/feature-requests",
       icon: Lightbulb,
       label: "Feature Requests",
-    },
-    {
-      href: "/dashboard/premium-features",
-      icon: Star,
-      label: "Premium Features",
     },
     {
       href: "/dashboard/stamp-manager",
