@@ -17,39 +17,27 @@ import Link from "next/link"
 import { SignOutButton } from "./auth/sign-out-button"
 import { User } from "lucide-react"
 
-interface UserNavProps {
-  session: any
-  userDetails: any
-}
-
-export function UserNav({ session, userDetails }: UserNavProps) {
+export function UserNav() {
   const [user, setUser] = useState<{ email: string; full_name: string | null } | null>(null)
   const supabase = createClientComponentClient()
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (session?.user) {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
         setUser({
-          email: session.user.email || "",
-          full_name: userDetails?.full_name || session.user.user_metadata?.full_name || null,
+          email: user.email || "",
+          full_name: user.user_metadata?.full_name || null,
         })
       }
     }
 
     fetchUser()
-  }, [session, userDetails])
+  }, [supabase])
 
   if (!user) return null
-
-  // Function to properly capitalize the name
-  const getDisplayName = (fullName: string | null, email: string): string => {
-    if (fullName) {
-      return fullName.replace(/\b\w/g, (match) => match.toUpperCase())
-    }
-    return email
-  }
-
-  const displayName = getDisplayName(user.full_name, user.email)
 
   const initials = user.full_name
     ? user.full_name
@@ -72,7 +60,7 @@ export function UserNav({ session, userDetails }: UserNavProps) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{displayName}</p>
+            <p className="text-sm font-medium leading-none">{user.full_name || "User"}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
@@ -98,7 +86,7 @@ export function UserNav({ session, userDetails }: UserNavProps) {
                 strokeLinejoin="round"
                 className="mr-2 h-4 w-4"
               >
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0-2-2z"></path>
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
               <span>Settings</span>
