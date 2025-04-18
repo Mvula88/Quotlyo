@@ -112,5 +112,3 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
 // Custom hook for using the language context
 export const useLanguage = () => useContext(LanguageContext)
-
-export const LanguageSelector = () => null

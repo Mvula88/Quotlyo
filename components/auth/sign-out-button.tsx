@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
-import { createClient } from "@/utils/supabase/client"
 
 interface SignOutButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
@@ -22,7 +22,7 @@ export function SignOutButton({
 }: SignOutButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const supabase = createClient()
+  const supabase = createClientComponentClient()
 
   const handleSignOut = async () => {
     try {

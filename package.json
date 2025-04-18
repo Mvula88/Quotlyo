@@ -63,10 +63,10 @@
     "@supabase/supabase-js": "latest",
     "react-chartjs-2": "latest",
     "framer-motion": "latest",
+    "@supabase/ssr": "latest",
     "@supabase/auth-helpers-nextjs": "latest",
     "resend": "latest",
-    "@react-email/components": "latest",
-    "@supabase/ssr": "latest"
+    "@react-email/components": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",
