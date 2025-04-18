@@ -32,7 +32,7 @@ async function getSession() {
 async function getUserDetails() {
   const supabase = createClient()
   const { data: user } = await supabase.auth.getUser()
-  if (user && user.user) {
+  if (user) {
     const { data: profile } = await supabase.from("clients").select("*").eq("email", user.user.email).single()
     return profile
   }
