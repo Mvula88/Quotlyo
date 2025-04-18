@@ -53,16 +53,30 @@ export function SignUpForm() {
         throw signUpError
       }
 
-      // Insert into users table
-      const { error: insertError } = await supabase.from("users").insert([
-        {
-          email: values.email,
-          full_name: values.fullName,
-        },
-      ])
+      // Check if user already exists in the users table
+      const { data: existingUser, error: selectError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("email", values.email)
+        .single()
 
-      if (insertError) {
-        console.error("Error inserting user data:", insertError)
+      if (selectError && selectError.code !== "PGRST116") {
+        // An unexpected error occurred
+        throw selectError
+      }
+
+      if (!existingUser) {
+        // Insert into users table only if the user doesn't already exist
+        const { error: insertError } = await supabase.from("users").insert([
+          {
+            email: values.email,
+            full_name: values.fullName,
+          },
+        ])
+
+        if (insertError) {
+          console.error("Error inserting user data:", insertError)
+        }
       }
 
       toast({

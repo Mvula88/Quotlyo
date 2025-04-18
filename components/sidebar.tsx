@@ -58,9 +58,6 @@ export function Sidebar({ className }: SidebarProps) {
   return (
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
-        <div className="px-4 py-2">
-          <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
-        </div>
         <div className="px-3">
           {routes.map((route) => (
             <Link
