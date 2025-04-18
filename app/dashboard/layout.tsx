@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import type React from "react"
 import Link from "next/link"
 import Image from "next/image"
@@ -13,13 +15,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 
 // Import the ThemeToggle component at the top of the file
 import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSelector } from "@/components/language-selector"
-import { useLanguage } from "@/contexts/language-context"
+import { LanguageSelector } from "@/contexts/language-context"
+import { useLanguage } from "@/components/hooks/use-language"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { Sidebar } from "@/components/sidebar"
 import { MobileNav } from "@/components/mobile-nav"
 import { UserNav } from "@/components/user-nav"
 import { SignOutButton } from "@/components/auth/sign-out-button"
+import { createClient } from "@/utils/supabase/client"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -37,13 +40,16 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
+  const supabase = createClient()
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <MobileNav />
         <div className="flex flex-1 items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
+            <Link href="/" className="flex items-center">
+              <Image src="/quotlyo_full_logo.png" alt="Quotlyo Logo" width={280} height={80} className="h-auto" />
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <LanguageSelector />
@@ -68,11 +74,10 @@ function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
 
   return (
     <aside
-      className={cn(
-        "flex flex-col border-r bg-background",
-        isCollapsed ? "w-[80px] items-center" : "w-[280px]",
-        className,
-      )}
+      className={
+        (cn("flex w-[280px] flex-col border-r bg-background", isCollapsed ? "w-[80px] items-center" : "w-[280px]"),
+        className)
+      }
     >
       <div className={cn("flex h-16 items-center border-b px-4", isCollapsed && "justify-center px-0")}>
         {isCollapsed ? (
@@ -128,8 +133,9 @@ function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
   )
 }
 
-function MobileSidebarOld({ links, pathname, setIsMobileOpen }) {
+function MobileSidebarOld({ links, pathname }) {
   const { t } = useLanguage()
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
     <div className="flex h-full flex-col bg-background">

@@ -1,7 +1,6 @@
 "use client"
 
-import type React from "react"
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext } from "react"
 
 // Define available languages
 export const languages = [
@@ -82,35 +81,5 @@ const translations = {
   yo: yoTranslations,
 }
 
-export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  // Initialize with English or saved preference
-  const [language, setLanguage] = useState("en")
-
-  // Load saved language preference on mount
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("quotlyo-language")
-    if (savedLanguage && Object.keys(translations).includes(savedLanguage)) {
-      setLanguage(savedLanguage)
-    }
-  }, [])
-
-  // Save language preference when it changes
-  useEffect(() => {
-    localStorage.setItem("quotlyo-language", language)
-    // Update HTML lang attribute
-    document.documentElement.lang = language
-  }, [language])
-
-  // Translation function
-  const t = (key: string): string => {
-    const currentTranslations = translations[language as keyof typeof translations] || {}
-    return currentTranslations[key] || key
-  }
-
-  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
-}
-
 // Custom hook for using the language context
 export const useLanguage = () => useContext(LanguageContext)
-
-export const LanguageSelector = () => null

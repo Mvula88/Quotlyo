@@ -9,6 +9,7 @@ import { BarChart3, FileText, Home, Menu, Settings, Shield, Users, X } from "luc
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { createClient } from "@/utils/supabase/client"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSelector } from "@/components/language-selector"
@@ -18,6 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
+  const supabase = createClient()
 
   const links = [
     {

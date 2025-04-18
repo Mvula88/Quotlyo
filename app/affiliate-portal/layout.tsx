@@ -11,13 +11,15 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageSelector } from "@/components/language-selector"
+import { LanguageSelector } from "@/contexts/language-context"
 import { useLanguage } from "@/contexts/language-context"
+import { createClient } from "@/utils/supabase/client"
 
 export default function AffiliatePortalLayout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
+  const supabase = createClient()
 
   const links = [
     {
