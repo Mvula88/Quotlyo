@@ -1,39 +1,43 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { LogOut, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { LogOut } from "lucide-react"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { useRouter } from "next/navigation"
 import { toast } from "@/components/ui/use-toast"
 
 interface SignOutButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
   size?: "default" | "sm" | "lg" | "icon"
+  showIcon?: boolean
+  className?: string
 }
 
-export function SignOutButton({ variant = "default", size = "default" }: SignOutButtonProps) {
+export function SignOutButton({
+  variant = "ghost",
+  size = "default",
+  showIcon = true,
+  className = "",
+}: SignOutButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const supabase = createClientComponentClient()
 
   const handleSignOut = async () => {
-    setIsLoading(true)
-
     try {
-      // Clear auth cookie
-      document.cookie = "quotlyo_auth=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-
+      setIsLoading(true)
+      await supabase.auth.signOut()
       toast({
         title: "Signed out successfully",
         description: "You have been signed out of your account",
       })
-
-      // Redirect to home page
-      window.location.href = "/"
+      router.push("/")
+      router.refresh()
     } catch (error) {
-      console.error("Sign out error:", error)
       toast({
         title: "Error signing out",
-        description: "An error occurred while signing out",
+        description: "There was a problem signing you out. Please try again.",
         variant: "destructive",
       })
     } finally {
@@ -42,17 +46,17 @@ export function SignOutButton({ variant = "default", size = "default" }: SignOut
   }
 
   return (
-    <Button variant={variant} size={size} onClick={handleSignOut} disabled={isLoading}>
+    <Button variant={variant} size={size} onClick={handleSignOut} disabled={isLoading} className={className}>
       {isLoading ? (
-        <>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        <span className="flex items-center gap-2">
+          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           Signing out...
-        </>
+        </span>
       ) : (
-        <>
-          <LogOut className="mr-2 h-4 w-4" />
+        <span className="flex items-center gap-2">
+          {showIcon && <LogOut className="h-4 w-4" />}
           Sign out
-        </>
+        </span>
       )}
     </Button>
   )
