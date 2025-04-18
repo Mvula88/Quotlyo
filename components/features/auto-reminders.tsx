@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Check, Clock, Mail, Settings } from "lucide-react"
+import { Check, Clock, Mail, Settings, Send } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
+import { sendTestEmail } from "@/app/actions/email-actions"
 import type { ReminderSettings } from "@/types/invoice"
 
 export function AutoReminders() {
@@ -21,6 +22,8 @@ export function AutoReminders() {
     sendAfter: true,
     afterDays: [3, 7, 14],
   })
+  const [testEmail, setTestEmail] = useState("")
+  const [isSendingTest, setIsSendingTest] = useState(false)
 
   const [emailTemplate, setEmailTemplate] = useState({
     subject: "Invoice #{{invoice_number}} from {{company_name}} - Payment Reminder",
@@ -72,12 +75,38 @@ Best regards,
     })
   }
 
-  const handleTestEmail = () => {
-    // In a real app, this would send a test email
-    toast({
-      title: "Test email sent",
-      description: "A test reminder email has been sent to your email address.",
-    })
+  const handleTestEmail = async () => {
+    if (!testEmail) {
+      toast({
+        title: "Email required",
+        description: "Please enter an email address to send the test to.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsSendingTest(true)
+    try {
+      const result = await sendTestEmail(testEmail, "reminder")
+
+      if (result.success) {
+        toast({
+          title: "Test email sent",
+          description: `A test reminder email has been sent to ${testEmail}`,
+        })
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      console.error("Error sending test email:", error)
+      toast({
+        title: "Failed to send test email",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+        variant: "destructive",
+      })
+    } finally {
+      setIsSendingTest(false)
+    }
   }
 
   return (
@@ -211,7 +240,9 @@ Best regards,
           <Card>
             <CardHeader>
               <CardTitle>Email Template</CardTitle>
-              <CardDescription>Customize the reminder emails sent to your clients.</CardDescription>
+              <CardDescription>
+                We use Resend for beautiful, responsive email templates. You can customize the content below.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -230,30 +261,53 @@ Best regards,
                   Available variables: {`{{invoice_number}}`}, {`{{company_name}}`}, {`{{amount}}`}, {`{{due_date}}`}
                 </p>
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="email-body">Email Body</Label>
-                <textarea
-                  id="email-body"
-                  className="min-h-[300px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  value={emailTemplate.body}
-                  onChange={(e) =>
-                    setEmailTemplate({
-                      ...emailTemplate,
-                      body: e.target.value,
-                    })
-                  }
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="test-email">Send Test Email</Label>
+                  <Button variant="outline" size="sm" onClick={handleTestEmail} disabled={isSendingTest || !testEmail}>
+                    {isSendingTest ? (
+                      <span className="flex items-center">
+                        <Clock className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </span>
+                    ) : (
+                      <span className="flex items-center">
+                        <Send className="mr-2 h-4 w-4" />
+                        Send Test
+                      </span>
+                    )}
+                  </Button>
+                </div>
+                <Input
+                  id="test-email"
+                  type="email"
+                  placeholder="Enter email address for test"
+                  value={testEmail}
+                  onChange={(e) => setTestEmail(e.target.value)}
+                  disabled={isSendingTest}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Available variables: {`{{client_name}}`}, {`{{invoice_number}}`}, {`{{amount}}`}, {`{{due_date}}`},{" "}
-                  {`{{status}}`}, {`{{invoice_link}}`}, {`{{company_name}}`}, {`{{company_email}}`},{" "}
-                  {`{{company_phone}}`}
+                  Send a test email to preview how your reminders will look.
                 </p>
               </div>
+
+              <div className="rounded-md border p-4 bg-slate-50">
+                <p className="text-sm font-medium mb-2">Email Preview</p>
+                <p className="text-xs text-muted-foreground mb-4">
+                  Your emails are built with React components for beautiful, responsive designs. They include your
+                  company branding and all the details clients need.
+                </p>
+                <div className="aspect-video bg-white rounded-md border overflow-hidden">
+                  <img
+                    src="/email-template-preview.png"
+                    alt="Email template preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" onClick={handleTestEmail}>
-                Send Test Email
-              </Button>
+            <CardFooter>
               <Button onClick={handleSaveTemplate}>Save Template</Button>
             </CardFooter>
           </Card>
