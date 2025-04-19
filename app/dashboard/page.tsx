@@ -1,5 +1,7 @@
 "use client"
 
+import { CardFooter } from "@/components/ui/card"
+
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -23,7 +25,7 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnimatedGradientBorder } from "@/components/ui/animated-gradient-border"
 import { AnimatedCounter } from "@/components/ui/animated-counter"
 import { PremiumButton } from "@/components/ui/premium-button"
@@ -78,7 +80,7 @@ export default function DashboardPage() {
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   }
 
   return (
@@ -106,7 +108,6 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="pb-2 md:pb-4">
               <CardTitle className="text-lg md:text-xl">{t("dashboard.quickActions")}</CardTitle>
-              <CardDescription className="text-xs md:text-sm">{t("dashboard.quickActionsDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               {isMobile ? (
@@ -340,7 +341,6 @@ export default function DashboardPage() {
                   <Sparkles className="mr-2 h-4 w-4 md:h-5 md:w-5 text-premium-600" />
                   <span className="gradient-text">{t("premium.title")}</span>
                 </CardTitle>
-                <CardDescription className="text-xs md:text-sm">{t("premium.description")}</CardDescription>
               </CardHeader>
               <CardContent>
                 {isMobile ? (
@@ -361,7 +361,6 @@ export default function DashboardPage() {
                               </div>
                               <div>
                                 <h4 className="text-sm font-medium">{t("premium.autoReminders")}</h4>
-                                <p className="text-xs text-muted-foreground">{t("premium.autoRemindersDesc")}</p>
                               </div>
                             </CardContent>
                           </Card>
@@ -377,7 +376,6 @@ export default function DashboardPage() {
                               </div>
                               <div>
                                 <h4 className="text-sm font-medium">{t("premium.recurringInvoices")}</h4>
-                                <p className="text-xs text-muted-foreground">{t("premium.recurringInvoicesDesc")}</p>
                               </div>
                             </CardContent>
                           </Card>
@@ -393,7 +391,6 @@ export default function DashboardPage() {
                               </div>
                               <div>
                                 <h4 className="text-sm font-medium">{t("premium.multiCurrency")}</h4>
-                                <p className="text-xs text-muted-foreground">{t("premium.multiCurrencyDesc")}</p>
                               </div>
                             </CardContent>
                           </Card>
@@ -418,7 +415,6 @@ export default function DashboardPage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-medium">{t("premium.autoReminders")}</h4>
-                              <p className="text-xs text-muted-foreground">{t("premium.autoRemindersDesc")}</p>
                             </div>
                           </CardContent>
                         </Card>
@@ -434,7 +430,6 @@ export default function DashboardPage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-medium">{t("premium.recurringInvoices")}</h4>
-                              <p className="text-xs text-muted-foreground">{t("premium.recurringInvoicesDesc")}</p>
                             </div>
                           </CardContent>
                         </Card>
@@ -450,7 +445,6 @@ export default function DashboardPage() {
                             </div>
                             <div>
                               <h4 className="text-sm font-medium">{t("premium.multiCurrency")}</h4>
-                              <p className="text-xs text-muted-foreground">{t("premium.multiCurrencyDesc")}</p>
                             </div>
                           </CardContent>
                         </Card>
@@ -459,14 +453,6 @@ export default function DashboardPage() {
                   </motion.div>
                 )}
               </CardContent>
-              <CardFooter>
-                <Link href="/dashboard/premium-features" className="w-full">
-                  <PremiumButton variant="premium" className="w-full text-sm">
-                    {t("premium.explorePremium")}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </PremiumButton>
-                </Link>
-              </CardFooter>
             </Card>
           </AnimatedGradientBorder>
         </motion.div>
@@ -486,7 +472,6 @@ export default function DashboardPage() {
                   <BarChart2 className="mr-2 h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                   <CardTitle className="text-lg">{t("dashboard.revenueOverview")}</CardTitle>
                 </div>
-                <CardDescription className="text-xs md:text-sm">{t("dashboard.revenueOverviewDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="h-[250px] md:h-[300px] w-full">
@@ -516,7 +501,6 @@ export default function DashboardPage() {
                   <Zap className="mr-2 h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                   <CardTitle className="text-lg">{t("dashboard.recentActivity")}</CardTitle>
                 </div>
-                <CardDescription className="text-xs md:text-sm">{t("dashboard.recentActivityDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-0">
@@ -598,7 +582,6 @@ export default function DashboardPage() {
                 <Share2 className="mr-2 h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                 <CardTitle className="text-lg">{t("dashboard.referFriends")}</CardTitle>
               </div>
-              <CardDescription className="text-xs md:text-sm">{t("dashboard.referFriendsDesc")}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 py-2 md:py-4">
@@ -647,7 +630,6 @@ export default function DashboardPage() {
                   <Calendar className="mr-2 h-4 w-4 md:h-5 md:w-5 text-blue-500" />
                   <CardTitle className="text-lg">{t("dashboard.upcomingPayments")}</CardTitle>
                 </div>
-                <CardDescription className="text-xs md:text-sm">{t("dashboard.upcomingPaymentsDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-3 md:space-y-4">
@@ -703,7 +685,6 @@ export default function DashboardPage() {
                   <Crown className="mr-2 h-4 w-4 md:h-5 md:w-5 text-premium-600" />
                   <CardTitle className="text-lg text-premium-700">{t("premium.upgradePlan")}</CardTitle>
                 </div>
-                <CardDescription className="text-xs md:text-sm">{t("premium.upgradePlanDesc")}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="space-y-2 md:space-y-4 py-2 md:py-4">
