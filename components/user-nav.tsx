@@ -1,5 +1,4 @@
-"use client"
-
+import { User } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,69 +10,51 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useEffect, useState } from "react"
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { auth } from "@/lib/auth"
 import Link from "next/link"
-import { SignOutButton } from "@/components/auth/sign-out-button"
-import { User } from "lucide-react"
+import { redirect } from "next/navigation"
 
-export function UserNav() {
-  const [user, setUser] = useState<{ email: string; full_name: string | null } | null>(null)
-  const supabase = createClientComponentClient()
+async function getCurrentUser() {
+  try {
+    return await auth()
+  } catch (error) {
+    console.error("Error getting current user:", error)
+    return null
+  }
+}
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (user) {
-        setUser({
-          email: user.email || "",
-          full_name: user.user_metadata?.full_name || null,
-        })
-      }
-    }
+export async function UserNav() {
+  const session = await getCurrentUser()
 
-    fetchUser()
-  }, [supabase])
-
-  if (!user) return null
-
-  const initials = user.full_name
-    ? user.full_name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-    : user.email.substring(0, 2).toUpperCase()
+  if (!session?.user) {
+    redirect("/login")
+  }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" alt={user.full_name || user.email} />
-            <AvatarFallback className="bg-primary text-primary-foreground">{initials}</AvatarFallback>
+            <AvatarImage
+              src={(session?.user?.image as string) || "/placeholder.svg"}
+              alt={session?.user?.name as string}
+            />
+            <AvatarFallback>{session?.user?.name?.charAt(0)}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.full_name || "User"}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-          </div>
-        </DropdownMenuLabel>
+        <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/profile">
+            <Link href="/dashboard/settings/profile">
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href="/dashboard/settings">
+            <Link href="/dashboard/settings/general">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -86,16 +67,16 @@ export function UserNav() {
                 strokeLinejoin="round"
                 className="mr-2 h-4 w-4"
               >
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.11a2.22 2.22 0 0 1-2.44 2.07 2 2 0 0 0-2.79-.91 2 2 0 0 0-1 2.22 2.21 2.21 0 0 1-.08 4 2 2 0 0 0 1.51 2 2 2 0 0 0 1.48-1.11h.44a2 2 0 0 0 2-2v-.11a2.22 2.22 0 0 1 2.44-2.07 2 2 0 0 0 2.79.91 2 2 0 0 0 1-2.22 2.21 2.21 0 0 1 .08-4 2 2 0 0 0-1.51-2 2 2 0 0 0-1.48 1.11z" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
               <span>Settings</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild className="cursor-pointer">
-          <SignOutButton variant="ghost" size="sm" showIcon={true} className="w-full justify-start" />
+        <DropdownMenuItem asChild>
+          <Link href="/logout">Log out</Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
