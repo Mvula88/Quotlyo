@@ -13,6 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageSelector } from "@/components/language-selector"
 import { useLanguage } from "@/contexts/language-context"
+import { GlobalAdBanner } from "@/components/global-ad-banner"
 
 export default function AffiliatePortalLayout({ children }: { children: React.ReactNode }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -43,42 +44,45 @@ export default function AffiliatePortalLayout({ children }: { children: React.Re
   ]
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <div className="flex-1 items-start">
-        <Sidebar links={links} className="fixed top-0 z-30 hidden h-screen lg:flex" />
+    <>
+      <GlobalAdBanner />
+      <div className="flex min-h-screen w-full flex-col">
+        <div className="flex-1 items-start">
+          <Sidebar links={links} className="fixed top-0 z-30 hidden h-screen lg:flex" />
 
-        {/* Desktop header */}
-        <div className="fixed top-4 right-4 z-40 hidden lg:flex items-center gap-2">
-          <LanguageSelector />
-          <ThemeToggle />
-        </div>
-
-        {/* Mobile header */}
-        <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 lg:hidden">
-          <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="p-0">
-              <MobileSidebar links={links} pathname={pathname} setIsMobileOpen={setIsMobileOpen} />
-            </SheetContent>
-          </Sheet>
-          <div className="flex items-center justify-center flex-1">
-            <Share2 className="h-5 w-5 mr-2 text-premium-600" />
-            <span className="font-semibold">{t("nav.referralProgram")}</span>
-          </div>
-          <div className="flex items-center gap-1">
+          {/* Desktop header */}
+          <div className="fixed top-4 right-4 z-40 hidden lg:flex items-center gap-2">
             <LanguageSelector />
             <ThemeToggle />
           </div>
-        </div>
 
-        <main className="lg:pl-[280px]">{children}</main>
+          {/* Mobile header */}
+          <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background px-4 lg:hidden">
+            <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="lg:hidden">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="p-0">
+                <MobileSidebar links={links} pathname={pathname} setIsMobileOpen={setIsMobileOpen} />
+              </SheetContent>
+            </Sheet>
+            <div className="flex items-center justify-center flex-1">
+              <Share2 className="h-5 w-5 mr-2 text-premium-600" />
+              <span className="font-semibold">{t("nav.referralProgram")}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <LanguageSelector />
+              <ThemeToggle />
+            </div>
+          </div>
+
+          <main className="lg:pl-[280px]">{children}</main>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

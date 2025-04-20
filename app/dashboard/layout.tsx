@@ -21,6 +21,8 @@ import { MobileNav } from "@/components/mobile-nav"
 import { Settings, FileText, Home, Users, FileCheck, BarChart3, Lightbulb, Stamp } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 import { UserNav } from "@/components/user-nav"
+// Import the GlobalAdBanner component at the top of the file:
+import { GlobalAdBanner } from "@/components/global-ad-banner"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -84,27 +86,30 @@ export default function DashboardLayout({
   ]
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-        <MobileNav />
-        <div className="flex flex-1 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
+    <>
+      <GlobalAdBanner />
+      <div className="flex min-h-screen flex-col">
+        <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
+          <MobileNav />
+          <div className="flex flex-1 items-center justify-between">
+            <div className="flex items-center gap-2">
+              <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
+            </div>
+            <div className="flex items-center gap-4">
+              <LanguageSelector />
+              <ThemeToggle />
+              <UserNav />
+              <SignOutButton />
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <LanguageSelector />
-            <ThemeToggle />
-            <UserNav />
-            <SignOutButton />
-          </div>
+        </header>
+        <div className="flex flex-1">
+          <Sidebar links={links} className="hidden lg:block" />
+          <main className="flex-1 p-4 md:p-6">{children}</main>
         </div>
-      </header>
-      <div className="flex flex-1">
-        <Sidebar links={links} className="hidden lg:block" />
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <ScrollToTop />
       </div>
-      <ScrollToTop />
-    </div>
+    </>
   )
 }
 
