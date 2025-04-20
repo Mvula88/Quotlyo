@@ -1,28 +1,19 @@
 /**
  * Adsterra Ads Integration Utility
- *
- * This utility provides functions to initialize and manage Adsterra ads.
  */
 
-export const initializeAdsterra = (zoneId: string, containerId: string): boolean => {
+export const initializeAdsterra = (): boolean => {
   if (typeof window === "undefined") return false
 
   try {
-    // Create the Adsterra script element
+    // Create the Adsterra script element with your specific code
     const script = document.createElement("script")
     script.async = true
     script.type = "text/javascript"
-    script.src = `https://www.adsterra.com/get/code?h=${zoneId}`
+    script.src = "//pl26429731.profitableratecpm.com/63/b4/1b/63b41b42e773c6ccfd7ec1bdb9b6182e.js"
 
-    // Get the container element
-    const container = document.getElementById(containerId)
-    if (!container) {
-      console.error(`Adsterra container with ID "${containerId}" not found`)
-      return false
-    }
-
-    // Append the script to the container
-    container.appendChild(script)
+    // Append the script to the document head
+    document.head.appendChild(script)
 
     return true
   } catch (error) {
@@ -49,10 +40,4 @@ export const checkAdBlocker = (): Promise<boolean> => {
       document.body.removeChild(testAd)
     }, 100)
   })
-}
-
-// Function to handle ad blocker detection
-export const handleAdBlocker = async (callback: (isBlocked: boolean) => void): Promise<void> => {
-  const isBlocked = await checkAdBlocker()
-  callback(isBlocked)
 }
