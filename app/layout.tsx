@@ -5,8 +5,6 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/contexts/language-context"
 import { MetadataUpdater } from "./metadata"
-import { GlobalAdBanner } from "@/components/global-ad-banner"
-import { AdsterraScript } from "@/components/adsterra-script"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -24,8 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AdsterraScript />
-        <GlobalAdBanner />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LanguageProvider>
             <MetadataUpdater />
