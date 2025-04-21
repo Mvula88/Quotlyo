@@ -9,7 +9,7 @@ import { Sparkles, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 // Import the ThemeToggle component at the top of the file
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -21,6 +21,8 @@ import { MobileNav } from "@/components/mobile-nav"
 import { Settings, FileText, Home, Users, FileCheck, BarChart3, Lightbulb, Stamp } from "lucide-react"
 import { SignOutButton } from "@/components/auth/sign-out-button"
 import { UserNav } from "@/components/user-nav"
+import { SubscriptionStatus } from "@/components/subscription-status"
+import { useState } from "react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed: boolean
@@ -84,7 +86,7 @@ export default function DashboardLayout({
   ]
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
         <MobileNav />
         <div className="flex flex-1 items-center justify-between">
@@ -101,33 +103,28 @@ export default function DashboardLayout({
       </header>
       <div className="flex flex-1">
         <Sidebar links={links} className="hidden lg:block" />
-        <main className="flex-1 p-4 md:p-6">{children}</main>
+        <main className="flex-1 p-4 md:p-6">
+          <SubscriptionStatus />
+          {children}
+        </main>
       </div>
       <ScrollToTop />
     </div>
   )
 }
 
-function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
+function Sidebar({ className, links }: SidebarProps) {
   const pathname = usePathname()
   const { t } = useLanguage()
 
   return (
-    <aside
-      className={cn(
-        "flex flex-col border-r bg-background",
-        isCollapsed ? "w-[80px] items-center" : "w-[280px]",
-        className,
-      )}
-    >
-      <div className={cn("flex h-16 items-center border-b px-4", isCollapsed && "justify-center px-0")}>
-        {isCollapsed ? (
-          <Image src="/quotlyo_favicon.png" alt="Quotlyo Logo" width={40} height={40} />
-        ) : (
-          <div className="flex w-full items-center justify-between">
-            <Image src="/quotlyo_full_logo.png" alt="Quotlyo Logo" width={160} height={48} className="h-auto" />
+    <aside className={cn("flex flex-col border-r bg-background", className)}>
+      <div className="flex h-16 items-center border-b px-4">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/quotlyo_full_logo.png" alt="Quotlyo Logo" className="h-8 w-auto" />
           </div>
-        )}
+        </div>
       </div>
       <ScrollArea className="flex-1">
         <nav className="flex flex-col gap-2 p-2">
@@ -140,8 +137,6 @@ function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
                     className={cn(
                       "flex h-10 items-center gap-2 rounded-md px-3 text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       pathname === link.href && "bg-blue-600 text-white",
-                      link.isAdmin && "mt-4 border-t pt-4",
-                      isCollapsed && "h-10 w-10 justify-center p-0",
                     )}
                   >
                     <link.icon
@@ -151,20 +146,12 @@ function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
                         link.isAdmin && "text-red-500",
                       )}
                     />
-                    {!isCollapsed && (
-                      <span
-                        className={cn(
-                          pathname === link.href ? "text-white" : link.isPremium && "text-premium-600 font-medium",
-                          link.isAdmin && "text-red-500 font-medium",
-                        )}
-                      >
-                        {link.name}
-                        {link.isPremium && <Sparkles className="ml-1 inline-block h-3 w-3 text-premium-600" />}
-                      </span>
-                    )}
+                    <span>
+                      {link.name}
+                      {link.isPremium && <Sparkles className="ml-1 inline-block h-3 w-3 text-premium-600" />}
+                    </span>
                   </Link>
                 </TooltipTrigger>
-                {isCollapsed && <TooltipContent side="right">{link.name}</TooltipContent>}
               </Tooltip>
             ))}
           </TooltipProvider>
@@ -174,16 +161,17 @@ function SidebarOld({ className, isCollapsed, links }: SidebarProps) {
   )
 }
 
-function MobileSidebarOld({ links, pathname, setIsMobileOpen }) {
+function MobileSidebar({ links, pathname, setIsMobileOpen }) {
   const { t } = useLanguage()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
     <div className="flex h-full flex-col bg-background">
       <div className="flex h-14 items-center justify-between border-b px-4">
-        <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileOpen(false)}>
+        <Link href="/" className="flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
           <Image src="/quotlyo_full_logo.png" alt="Quotlyo Logo" width={140} height={40} className="h-auto" />
         </Link>
-        <Button variant="ghost" size="icon" onClick={() => setIsMobileOpen(false)}>
+        <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)}>
           <X className="h-5 w-5" />
         </Button>
       </div>
@@ -193,7 +181,7 @@ function MobileSidebarOld({ links, pathname, setIsMobileOpen }) {
             <Link
               key={link.href}
               href={link.href}
-              onClick={() => setIsMobileOpen(false)}
+              onClick={() => setIsMobileMenuOpen(false)}
               className={cn(
                 "flex h-12 items-center gap-3 rounded-md px-3 text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                 pathname === link.href && "bg-blue-600 text-white",
