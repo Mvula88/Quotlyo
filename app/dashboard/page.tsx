@@ -30,6 +30,7 @@ import { PremiumButton } from "@/components/ui/premium-button"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useLanguage } from "@/contexts/language-context"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 export default function DashboardPage() {
   const { t } = useLanguage()
@@ -37,6 +38,31 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState("John")
   const [currentTime, setCurrentTime] = useState(new Date())
   const [isMobile, setIsMobile] = useState(false)
+  const [user, setUser] = useState<{ email: string; full_name: string | null } | null>(null)
+  const supabase = createClientComponentClient()
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (user) {
+        setUser({
+          email: user.email || "",
+          full_name: user.user_metadata?.full_name || null,
+        })
+      }
+    }
+
+    fetchUser()
+  }, [supabase])
+
+  // Update the userName state using the fetched user data
+  useEffect(() => {
+    if (user) {
+      setUserName(user.full_name || user.email)
+    }
+  }, [user])
 
   useEffect(() => {
     setIsLoaded(true)

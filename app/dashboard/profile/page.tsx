@@ -7,7 +7,7 @@ import * as z from "zod"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
@@ -15,7 +15,6 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 const profileFormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  website: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal("")),
 })
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>
@@ -23,14 +22,13 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(false)
   const supabase = createClientComponentClient()
-  const [initialValues, setInitialValues] = useState<ProfileFormValues | null>(null)
+  const [initialValues, setInitialValues] = useState<Omit<ProfileFormValues, "website"> | null>(null)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: initialValues || {
       fullName: "",
       email: "",
-      website: "",
     },
     mode: "onChange",
   })
@@ -59,13 +57,11 @@ export default function ProfilePage() {
           setInitialValues({
             fullName: profile?.full_name || "",
             email: profile?.email || user.email || "",
-            website: profile?.website || "",
           })
 
           form.reset({
             fullName: profile?.full_name || user.email || "",
             email: profile?.email || "",
-            website: profile?.website || "",
           })
         }
       } catch (error: any) {
@@ -97,7 +93,6 @@ export default function ProfilePage() {
         .from("users")
         .update({
           full_name: values.fullName,
-          website: values.website,
         })
         .eq("id", user.user.id)
 
@@ -161,20 +156,6 @@ export default function ProfilePage() {
                         <FormControl>
                           <Input placeholder="name@example.com" {...field} type="email" disabled={isLoading} />
                         </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="website"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Website</FormLabel>
-                        <FormControl>
-                          <Input placeholder="https://example.com" {...field} disabled={isLoading} />
-                        </FormControl>
-                        <FormDescription>Enter your personal website URL.</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
