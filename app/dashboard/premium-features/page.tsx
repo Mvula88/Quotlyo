@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import { Bell, Globe, Repeat } from "lucide-react"
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AutoReminders } from "@/components/features/auto-reminders"
 import { RecurringInvoices } from "@/components/features/recurring-invoices"
 import { MultiCurrencyTax } from "@/components/features/multi-currency-tax"
+import { FeatureGate } from "@/components/feature-gate"
 
 export default function PremiumFeaturesPage() {
   const [activeTab, setActiveTab] = useState("auto-reminders")
@@ -38,15 +38,21 @@ export default function PremiumFeaturesPage() {
           </TabsList>
 
           <TabsContent value="auto-reminders">
-            <AutoReminders />
+            <FeatureGate feature="autoReminders">
+              <AutoReminders />
+            </FeatureGate>
           </TabsContent>
 
           <TabsContent value="recurring-invoices">
-            <RecurringInvoices />
+            <FeatureGate feature="recurringInvoices">
+              <RecurringInvoices />
+            </FeatureGate>
           </TabsContent>
 
           <TabsContent value="multi-currency-tax">
-            <MultiCurrencyTax />
+            <FeatureGate feature="multiCurrency">
+              <MultiCurrencyTax />
+            </FeatureGate>
           </TabsContent>
         </Tabs>
       </main>
